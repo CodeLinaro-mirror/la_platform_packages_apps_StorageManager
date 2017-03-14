@@ -32,13 +32,12 @@
     <string name="deletion_helper_downloads_title" msgid="2976599380628177756">"Преземања (<xliff:g id="NUMITEMS">%1$d</xliff:g>)"</string>
     <!-- no translation found for deletion_helper_downloads_category_summary (8545989355108311347) -->
     <skip />
-    <string name="deletion_helper_downloads_file_summary" msgid="2610952169093565355">"<xliff:g id="USED">%1$s</xliff:g> • <xliff:g id="DAYS">%2$s</xliff:g>"</string>
     <!-- no translation found for deletion_helper_downloads_summary_empty (3988054032360371887) -->
     <skip />
     <string name="deletion_helper_clear_dialog_message" msgid="4896104662649947320">"<xliff:g id="CLEARABLE_BYTES">%1$s</xliff:g> ќе бидат отстранети од вашиот уред"</string>
     <string name="deletion_helper_clear_dialog_remove" msgid="3386502418767917932">"Отстрани"</string>
     <string name="deletion_helper_upsell_title" msgid="8512037674466762017">"Дали автоматски да се управува со меморијата?"</string>
-    <string name="deletion_helper_upsell_summary" msgid="2301597713694474407">"<xliff:g id="USED">%1$s</xliff:g> сега се слободни. Дали да му се дозволи на Управникот со меморијата автоматски да ослободи простор со отстранување на резервната копија на содржините од уредот?"</string>
+    <string name="deletion_helper_upsell_summary" msgid="2301597713694474407">"<xliff:g id="USED">%1$s</xliff:g> сега се слободни. Дали да му се дозволи на Управникот со меморијата автоматски да ослободи простор со отстранување на бекапот на содржините од уредот?"</string>
     <string name="deletion_helper_upsell_cancel" msgid="7084167642850053889">"Не, благодарам"</string>
     <string name="deletion_helper_upsell_activate" msgid="7157360257760895976">"Вклучи"</string>
     <string name="deletion_helper_apps_group_title" msgid="6554321362396920050">"Апликации (<xliff:g id="NUM_ITEMS">%1$d</xliff:g>)"</string>
