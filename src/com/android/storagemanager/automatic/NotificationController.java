@@ -17,6 +17,7 @@
 package com.android.storagemanager.automatic;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -24,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.SystemProperties;
 import android.provider.Settings;
 import android.support.annotation.VisibleForTesting;
@@ -83,6 +85,7 @@ public class NotificationController extends BroadcastReceiver {
     private static final String NOTIFICATION_SHOWN_COUNT = "notification_shown_count";
     private static final String NOTIFICATION_DISMISS_COUNT = "notification_dismiss_count";
     private static final String STORAGE_MANAGER_PROPERTY = "ro.storage_manager.enabled";
+    private static final String CHANNEL_ID = "storage";
 
     private static final long DISMISS_DELAY = TimeUnit.DAYS.toMillis(14);
     private static final long NO_THANKS_DELAY = TimeUnit.DAYS.toMillis(90);
@@ -189,14 +192,25 @@ public class NotificationController extends BroadcastReceiver {
         PendingIntent tapIntent = PendingIntent.getBroadcast(context, 0,  contentIntent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Notification.Builder builder = new Notification.Builder(context)
-                .setSmallIcon(R.drawable.ic_settings_24dp)
+        Notification.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            makeNotificationChannel(context);
+            builder = new Notification.Builder(context, CHANNEL_ID);
+        } else {
+            builder = new Notification.Builder(context);
+        }
+
+        builder.setSmallIcon(R.drawable.ic_settings_24dp)
                 .setContentTitle(
                         res.getString(R.string.automatic_storage_manager_notification_title))
                 .setContentText(
                         res.getString(R.string.automatic_storage_manager_notification_summary))
-                .setStyle(new Notification.BigTextStyle().bigText(
-                        res.getString(R.string.automatic_storage_manager_notification_summary)))
+                .setStyle(
+                        new Notification.BigTextStyle()
+                                .bigText(
+                                        res.getString(
+                                                R.string
+                                                        .automatic_storage_manager_notification_summary)))
                 .addAction(cancelAction.build())
                 .addAction(activateAutomaticAction.build())
                 .setContentIntent(tapIntent)
@@ -206,6 +220,16 @@ public class NotificationController extends BroadcastReceiver {
         NotificationManager manager =
                 ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE));
         manager.notify(NOTIFICATION_ID, builder.build());
+    }
+
+    private void makeNotificationChannel(Context context) {
+        final NotificationManager nm = context.getSystemService(NotificationManager.class);
+        final NotificationChannel channel =
+                new NotificationChannel(
+                        CHANNEL_ID,
+                        context.getString(R.string.app_name),
+                        NotificationManager.IMPORTANCE_LOW);
+        nm.createNotificationChannel(channel);
     }
 
     private void cancelNotification(Context context, Intent intent) {
