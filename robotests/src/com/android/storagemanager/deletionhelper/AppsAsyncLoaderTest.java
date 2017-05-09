@@ -72,7 +72,7 @@ public class AppsAsyncLoaderTest {
     private ArrayList<ApplicationInfo> mInfo;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         // Set up our mock usage app service.
@@ -297,6 +297,41 @@ public class AppsAsyncLoaderTest {
         AppsAsyncLoader.PackageInfo app = createPackage(PACKAGE_NAME, 1000 - 366, 400);
 
         assertThat(AppsAsyncLoader.FILTER_USAGE_STATS.filterApp(app)).isTrue();
+    }
+
+    @Test
+    public void test_getGreaterUsageStats_primaryIsNull() {
+        UsageStats secondary = mock(UsageStats.class);
+        when(secondary.getLastTimeUsed()).thenReturn(1000L);
+        assertThat(mLoader.getGreaterUsageStats(PACKAGE_NAME, null, secondary))
+                .isEqualTo(secondary);
+    }
+
+    @Test
+    public void test_getGreaterUsageStats_secondaryIsNull() {
+        UsageStats primary = mock(UsageStats.class);
+        when(primary.getLastTimeUsed()).thenReturn(1000L);
+        assertThat(mLoader.getGreaterUsageStats(PACKAGE_NAME, primary, null)).isEqualTo(primary);
+    }
+
+    @Test
+    public void test_getGreaterUsageStats_primaryIsGreater() {
+        UsageStats primary = mock(UsageStats.class);
+        when(primary.getLastTimeUsed()).thenReturn(1000L);
+        UsageStats secondary = mock(UsageStats.class);
+        when(secondary.getLastTimeUsed()).thenReturn(900L);
+        assertThat(mLoader.getGreaterUsageStats(PACKAGE_NAME, primary, secondary))
+                .isEqualTo(primary);
+    }
+
+    @Test
+    public void test_getGreaterUsageStats_secondaryIsGreater() {
+        UsageStats primary = mock(UsageStats.class);
+        when(primary.getLastTimeUsed()).thenReturn(900L);
+        UsageStats secondary = mock(UsageStats.class);
+        when(secondary.getLastTimeUsed()).thenReturn(1000L);
+        assertThat(mLoader.getGreaterUsageStats(PACKAGE_NAME, primary, secondary))
+                .isEqualTo(secondary);
     }
 
     private AppsAsyncLoader.PackageInfo createPackage(
