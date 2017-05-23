@@ -17,7 +17,9 @@
 package com.android.storagemanager.deletionhelper;
 
 import android.content.Context;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceScreen;
 import android.text.format.Formatter;
 import android.util.AttributeSet;
 import com.android.internal.logging.MetricsLogger;
@@ -33,6 +35,8 @@ import java.util.List;
 public class AppDeletionPreferenceGroup extends CollapsibleCheckboxPreferenceGroup
         implements AppDeletionType.AppListener, Preference.OnPreferenceChangeListener {
     private AppDeletionType mBackend;
+
+    @VisibleForTesting PreferenceScreen mScreen;
 
     public AppDeletionPreferenceGroup(Context context) {
         this(context, null);
@@ -64,14 +68,34 @@ public class AppDeletionPreferenceGroup extends CollapsibleCheckboxPreferenceGro
                 preference.setKey(packageName);
                 preference.setOnPreferenceChangeListener(this);
             }
-
-            addPreference(preference);
+            addThresholdDependentPreference(preference, isNoThreshold());
             preference.setChecked(mBackend.isChecked(packageName));
             preference.setOrder(i);
             preference.updateSummary();
         }
         cache.removeCachedPrefs();
         updateText();
+    }
+
+    private void addThresholdDependentPreference(
+            AppDeletionPreference preference, boolean isThresholded) {
+        if (isNoThreshold()) {
+            addPreferenceToScreen(preference);
+        } else {
+            addPreference(preference);
+        }
+    }
+
+    private boolean isNoThreshold() {
+        return mBackend.getDeletionThreshold() == 0;
+    }
+
+    @VisibleForTesting
+    void addPreferenceToScreen(AppDeletionPreference preference) {
+        if (mScreen == null) {
+            mScreen = getPreferenceManager().getPreferenceScreen();
+        }
+        mScreen.addPreference(preference);
     }
 
     @Override
@@ -108,12 +132,13 @@ public class AppDeletionPreferenceGroup extends CollapsibleCheckboxPreferenceGro
     @Override
     public void onClick() {
         super.onClick();
-        MetricsLogger.action(getContext(), MetricsEvent.ACTION_DELETION_APPS_COLLAPSED,
-                isCollapsed());
+        MetricsLogger.action(
+                getContext(), MetricsEvent.ACTION_DELETION_APPS_COLLAPSED, isCollapsed());
     }
 
     /**
      * Initializes the PreferenceGroup with a source of apps to list.
+     *
      * @param type The AppDeletionType which provides the app list.
      */
     public void setDeletionType(AppDeletionType type) {
@@ -124,10 +149,11 @@ public class AppDeletionPreferenceGroup extends CollapsibleCheckboxPreferenceGro
         long freeableBytes = 0;
         long deletionThreshold = AppsAsyncLoader.UNUSED_DAYS_DELETION_THRESHOLD;
         if (mBackend != null) {
-            freeableBytes = mBackend.getTotalAppsFreeableSpace(true);
+            freeableBytes =
+                    mBackend.getTotalAppsFreeableSpace(DeletionHelperSettings.COUNT_UNCHECKED);
             deletionThreshold = mBackend.getDeletionThreshold();
+            switchSpinnerToCheckboxOrDisablePreference(freeableBytes, mBackend.getLoadingStatus());
         }
-
         Context app = getContext();
         setTitle(app.getString(R.string.deletion_helper_apps_group_title));
         setSummary(
@@ -139,8 +165,8 @@ public class AppDeletionPreferenceGroup extends CollapsibleCheckboxPreferenceGro
 
     private void logAppToggle(boolean checked, String packageName) {
         if (checked) {
-            MetricsLogger.action(getContext(), MetricsEvent.ACTION_DELETION_SELECTION_APP_ON,
-                    packageName);
+            MetricsLogger.action(
+                    getContext(), MetricsEvent.ACTION_DELETION_SELECTION_APP_ON, packageName);
         } else {
             MetricsLogger.action(getContext(), MetricsEvent.ACTION_DELETION_SELECTION_APP_OFF,
                     packageName);

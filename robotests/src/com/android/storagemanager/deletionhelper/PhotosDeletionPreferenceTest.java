@@ -27,12 +27,15 @@ import com.android.storagemanager.R;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest=TestingConstants.MANIFEST, sdk=TestingConstants.SDK_VERSION)
@@ -40,11 +43,14 @@ public class PhotosDeletionPreferenceTest {
     private Context mContext;
     private PreferenceViewHolder mHolder;
     private PhotosDeletionPreference mPreference;
+    @Mock private DeletionType mDeletionType;
 
     @Before
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
         mContext = RuntimeEnvironment.application;
         mPreference = new PhotosDeletionPreference(mContext, null);
+        mPreference.registerDeletionService(mDeletionType);
 
         // Inflate the preference and the widget.
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -58,7 +64,8 @@ public class PhotosDeletionPreferenceTest {
 
     @Test
     public void testConstructor() {
-        assertThat(mPreference.getFreeableBytes()).isEqualTo(0);
+        assertThat(mPreference.getFreeableBytes(DeletionHelperSettings.COUNT_CHECKED_ONLY))
+                .isEqualTo(0);
     }
 
     @Test
@@ -66,7 +73,7 @@ public class PhotosDeletionPreferenceTest {
         mPreference.onBindViewHolder(mHolder);
         assertThat(mHolder.findViewById(R.id.progress_bar).getVisibility()).isEqualTo(View.VISIBLE);
         assertThat(mHolder.findViewById(android.R.id.icon).getVisibility()).isEqualTo(View.GONE);
-        assertThat(mHolder.findViewById(android.R.id.checkbox).getVisibility())
+        assertThat(mHolder.findViewById(android.R.id.widget_frame).getVisibility())
                 .isEqualTo(View.GONE);
     }
 
@@ -79,7 +86,7 @@ public class PhotosDeletionPreferenceTest {
 
         // After onFreeableChanged is called, we're no longer loading.
         assertThat(mHolder.findViewById(R.id.progress_bar).getVisibility()).isEqualTo(View.GONE);
-        assertThat(mHolder.findViewById(android.R.id.icon).getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(mHolder.findViewById(android.R.id.icon).getVisibility()).isEqualTo(View.GONE);
         assertThat(mHolder.findViewById(android.R.id.checkbox).getVisibility())
                 .isEqualTo(View.VISIBLE);
     }
@@ -93,5 +100,28 @@ public class PhotosDeletionPreferenceTest {
 
         assertThat(mPreference.getTitle()).isEqualTo("Backed up photos & videos");
         assertThat(mPreference.getSummary().toString()).isEqualTo("1.00KB");
+    }
+
+    @Test
+    public void testDisabledIfNothingToClear() {
+        when(mDeletionType.isEmpty()).thenReturn(true);
+        mPreference.onFreeableChanged(0, 0);
+        Robolectric.flushBackgroundThreadScheduler();
+        Robolectric.flushForegroundThreadScheduler();
+        mPreference.onBindViewHolder(mHolder);
+
+        assertThat(mPreference.isEnabled()).isFalse();
+    }
+
+    @Test
+    public void testGetFreeableBytes() {
+        mPreference.onFreeableChanged(100, 1024L);
+        Robolectric.flushBackgroundThreadScheduler();
+        Robolectric.flushForegroundThreadScheduler();
+
+        assertThat(mPreference.getFreeableBytes(DeletionHelperSettings.COUNT_CHECKED_ONLY))
+                .isEqualTo(0);
+        assertThat(mPreference.getFreeableBytes(DeletionHelperSettings.COUNT_UNCHECKED))
+                .isEqualTo(1024L);
     }
 }

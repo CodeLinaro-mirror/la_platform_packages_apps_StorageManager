@@ -53,11 +53,13 @@ public class AppDeletionType
     private Context mContext;
     private int mThresholdType;
     private List<PackageInfo> mApps;
+    private int mLoadingStatus;
 
     public AppDeletionType(
             DeletionHelperSettings fragment,
             HashSet<String> checkedApplications,
             int thresholdType) {
+        mLoadingStatus = LoadingStatus.LOADING;
         mThresholdType = thresholdType;
         mContext = fragment.getContext();
         if (checkedApplications != null) {
@@ -185,7 +187,9 @@ public class AppDeletionType
 
     private void maybeNotifyListener() {
         if (mListener != null) {
-            mListener.onFreeableChanged(mApps.size(), getTotalAppsFreeableSpace(false));
+            mListener.onFreeableChanged(
+                    mApps.size(),
+                    getTotalAppsFreeableSpace(DeletionHelperSettings.COUNT_CHECKED_ONLY));
         }
     }
 
@@ -199,6 +203,21 @@ public class AppDeletionType
             default:
                 return AppsAsyncLoader.UNUSED_DAYS_DELETION_THRESHOLD;
         }
+    }
+
+    @Override
+    public int getLoadingStatus() {
+        return mLoadingStatus;
+    }
+
+    @Override
+    public int getContentCount() {
+        return mApps.size();
+    }
+
+    @Override
+    public void setLoadingStatus(@LoadingStatus int loadingStatus) {
+        mLoadingStatus = loadingStatus;
     }
 
     @Override
@@ -219,6 +238,7 @@ public class AppDeletionType
     @Override
     public void onLoadFinished(Loader<List<PackageInfo>> loader, List<PackageInfo> data) {
         mApps = data;
+        updateLoadingStatus();
         maybeNotifyListener();
         mAppListener.onAppRebuild(mApps);
     }
