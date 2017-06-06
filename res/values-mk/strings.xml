@@ -48,7 +48,9 @@
     <string name="deletion_helper_manual_title" msgid="3905192395039688529">"Рачни поставки"</string>
     <string name="deletion_helper_preference_title" msgid="803484286872745892">"Ослободете простор сега"</string>
     <string name="automatic_storage_manager_service_label" msgid="648592272375278978">"Услуга за авто-управување со меморијата"</string>
-    <string name="automatic_storage_manager_notification_title" msgid="8480483265300964701">"На телефонот нема доволно простор"</string>
+    <string name="automatic_storage_manager_notification_title" product="default" msgid="8480483265300964701">"На телефонот нема доволно простор"</string>
+    <!-- no translation found for automatic_storage_manager_notification_title (3150907918531844467) -->
+    <skip />
     <string name="automatic_storage_manager_notification_summary" msgid="2267399886362245822">"Дозволете Управникот со меморијата да ослободи простор со автоматско отстранување на старите фотографии и видеа кога телефонот повторно ќе почне да се преполнува."</string>
     <string name="automatic_storage_manager_cancel_button" msgid="1826365037494962803">"Не, благодарам"</string>
     <string name="automatic_storage_manager_activate_button" msgid="6257070263061898041">"Вклучи"</string>
@@ -57,6 +59,6 @@
     <string name="deletion_helper_clear_dialog_message_first_time" msgid="386144597646356521">"<xliff:g id="CLEARABLE_BYTES">%1$s</xliff:g> ќе бидат отстранети од вашиот уред"</string>
     <string name="automatic_storage_manager_activation_warning" msgid="7657017408180001078">"Управникот со меморија сега управува со вашата меморија"</string>
     <string name="empty_state_title" msgid="4033285438176545309">"Ништо за отстранување"</string>
-    <string name="empty_state_review_items_link" msgid="8411186441239304545">"Рецензирајте ги неодамнешните ставки"</string>
+    <string name="empty_state_review_items_link" msgid="8411186441239304545">"Прегледајте ги неодамнешните ставки"</string>
     <string name="empty_state_summary" msgid="8439893007424243790">"Нема стари датотеки за отстранување. За да ослободите простор, отстранете неодамнешни фотографии, видеа и апликации."</string>
 </resources>

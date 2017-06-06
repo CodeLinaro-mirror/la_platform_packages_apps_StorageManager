@@ -48,7 +48,9 @@
     <string name="deletion_helper_manual_title" msgid="3905192395039688529">"Вручну"</string>
     <string name="deletion_helper_preference_title" msgid="803484286872745892">"Звільнити місце"</string>
     <string name="automatic_storage_manager_service_label" msgid="648592272375278978">"Служба автоматичного керування пам’яттю"</string>
-    <string name="automatic_storage_manager_notification_title" msgid="8480483265300964701">"На телефоні замало місця"</string>
+    <string name="automatic_storage_manager_notification_title" product="default" msgid="8480483265300964701">"На телефоні замало місця"</string>
+    <!-- no translation found for automatic_storage_manager_notification_title (3150907918531844467) -->
+    <skip />
     <string name="automatic_storage_manager_notification_summary" msgid="2267399886362245822">"Дозволити диспетчеру пам’яті автоматично звільняти місце, видаляючи старі фото й відео, коли на телефоні замало місця."</string>
     <string name="automatic_storage_manager_cancel_button" msgid="1826365037494962803">"Ні, дякую"</string>
     <string name="automatic_storage_manager_activate_button" msgid="6257070263061898041">"Увімкнути"</string>
@@ -56,7 +58,7 @@
     <string name="deletion_helper_photos_loading_summary" msgid="8203033249458245854">"Пошук елементів…"</string>
     <string name="deletion_helper_clear_dialog_message_first_time" msgid="386144597646356521">"З пристрою буде видалено <xliff:g id="CLEARABLE_BYTES">%1$s</xliff:g>"</string>
     <string name="automatic_storage_manager_activation_warning" msgid="7657017408180001078">"Зараз пам’яттю керує диспетчер пам’яті"</string>
-    <string name="empty_state_title" msgid="4033285438176545309">"Немає елементів для вилучення"</string>
+    <string name="empty_state_title" msgid="4033285438176545309">"Нічого видалити"</string>
     <string name="empty_state_review_items_link" msgid="8411186441239304545">"Переглянути останні елементи"</string>
     <string name="empty_state_summary" msgid="8439893007424243790">"Немає старіших файлів для вилучення. Щоб звільнити місце, вилучіть останні фото, відео й додатки."</string>
 </resources>
