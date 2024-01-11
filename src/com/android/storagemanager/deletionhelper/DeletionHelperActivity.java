@@ -149,13 +149,15 @@ public class DeletionHelperActivity extends Activity implements ButtonBarProvide
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentManager manager = getFragmentManager();
         int thresholdType;
-        int itemId = item.getItemId();
-        if (itemId == R.id.no_threshold) {
-            thresholdType = AppStateUsageStatsBridge.NO_THRESHOLD;
-        } else if (itemId == R.id.default_threshold) {
-            thresholdType = AppStateUsageStatsBridge.NORMAL_THRESHOLD;
-        } else {
-            return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.no_threshold:
+                thresholdType = AppStateUsageStatsBridge.NO_THRESHOLD;
+                break;
+            case R.id.default_threshold:
+                thresholdType = AppStateUsageStatsBridge.NORMAL_THRESHOLD;
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
         mFragment = DeletionHelperSettings.newInstance(thresholdType);

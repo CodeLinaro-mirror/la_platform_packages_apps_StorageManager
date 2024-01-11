@@ -27,30 +27,36 @@ android_app {
     required: ["privapp_whitelist_com.android.storagemanager"],
 
     static_libs: [
-        "StorageManager-lib",
+        "androidx.legacy_legacy-preference-v14",
+        "androidx.appcompat_appcompat",
+        "androidx.preference_preference",
+        "androidx.recyclerview_recyclerview",
     ],
 
     libs: ["keepanno-annotations"],
 
     uses_libs: ["org.apache.http.legacy"],
 
-    resource_dirs: [],
+    resource_dirs: ["res"],
+
+    srcs: ["src/**/*.java"],
+}
+
+// The sources for StorageManager need to be exposed to StorageManagerGoogle.
+filegroup {
+    name: "StorageManager_srcs",
+    srcs: ["src/**/*.java"],
 }
 
 android_library {
-    name: "StorageManager-lib",
-    defaults: ["SettingsLibDefaults"],
-    platform_apis: true,
+    name: "StorageManager-res-lib",
 
     manifest: "AndroidManifest.xml",
 
     static_libs: [
-        "androidx.legacy_legacy-preference-v14",
         "androidx.appcompat_appcompat",
         "androidx.preference_preference",
     ],
-
-    libs: ["keepanno-annotations"],
 
     resource_dirs: [
         "res",
@@ -59,6 +65,4 @@ android_library {
     aaptflags: [
         "--auto-add-overlay",
     ],
-
-    srcs: ["src/**/*.java"],
 }
